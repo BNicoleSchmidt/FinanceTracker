@@ -1,5 +1,8 @@
 package model;
 
-public class AppDbTest {
+	
+public class AppDbTest
+{
+
 
 }
