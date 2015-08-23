@@ -20,19 +20,24 @@ import java.sql.SQLException;
 public class TransactionModel
 {
 	private int mTransactionID;
-	private int mHTransactionID;  // hidden value
+
 	private String mTransactionDate;
 	private int mUserID;
-	private int mHUserID;
 	private String mName;         // user table
-	private String mHName;        // hidden value
 	private char mTransactionType;
 	private double mAmount;
 	private int mCategoryID;
 	private String mCategoryName; // category table
-	private String mHCategoryName;  // hidden value
 	private String mDescription;
 
+
+	// hidden values
+	private int mHTransactionID;  
+	private int mHUserID;
+	private String mHName;   
+	private int mHCategoryID;       
+	private String mHCategoryName;  
+	
 	private String query;
 
 	private static final String tableQuery = (
@@ -50,19 +55,21 @@ public class TransactionModel
 	{
 		mTransactionID = 0;     // should this be null. what happens on an insert if
 								//  this field is populated.
-		mHTransactionID = 0;
+
 		mTransactionDate = "1/1/2000";
 		mUserID = 0;
-		mHUserID = 0;
 		mName = " ";
-		mHName = " ";
 		mTransactionType = '-';
 		mAmount = 0.00;
 		mCategoryID = 0;
-		//mHCategoryID = 0;
 		mCategoryName = " ";
 		mHCategoryName = " ";
 		mDescription = " ";
+		
+		mHTransactionID = 0;
+		mHUserID = 0;
+		mHName = " ";
+		mHCategoryID = 0;
 	};
 	// end of constructor
 
@@ -177,7 +184,8 @@ public class TransactionModel
 		else
 		{
 			// display error msg TODO mg
-			// "Amount is a required field and must be positive numeric."
+
+			// "Amount is a required field and must be a positive number."
 		}
 	}
 
@@ -305,3 +313,4 @@ public class TransactionModel
 
 
 } // end of TransactionModel class
+

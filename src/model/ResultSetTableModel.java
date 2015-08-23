@@ -185,3 +185,4 @@ public class ResultSetTableModel extends AbstractTableModel
 		} // end finally
 	} // end class method disconnectFromDatabase
 } // end ResultSetTableModel class
+
