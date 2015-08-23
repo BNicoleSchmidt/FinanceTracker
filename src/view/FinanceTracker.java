@@ -20,7 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Display extends JFrame
+public class FinanceTracker extends JFrame
 {
 	private JTextField jTransactionID;
 	private JTextField jUserID;
@@ -40,7 +40,7 @@ public class Display extends JFrame
 	private JTextField jHCategoryID;
 	private JTextField jHCategoryName;
 
-	public Display()
+	public FinanceTracker()
 	{
 		// Create and show GUI
 		super( "Finance Tracker" );
@@ -121,7 +121,7 @@ public class Display extends JFrame
 
 public static void main( String[] args )
 {
-	JFrame frame = new Display();
+	JFrame frame = new FinanceTracker();
 	// Add a window listener for close button
 	frame.addWindowListener(new WindowAdapter() {
 

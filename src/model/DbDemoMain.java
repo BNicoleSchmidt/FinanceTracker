@@ -1,10 +1,11 @@
+package model;
 
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class Main {
+public class DbDemoMain {
 
 	public static Connection getDbConnection() throws SQLException, ClassNotFoundException {
 
