@@ -7,3 +7,5 @@ CoderGirl St. Louis.
 
 The application tracks transactions (both spending and receiving) by
 what the item is, the amount, the category, and which roommate it came from.
+The application also provides basic reporting.
+
