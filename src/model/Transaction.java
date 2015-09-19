@@ -1,3 +1,12 @@
+// Description: This class stores and manages data for a single transaction record.
+// It provides the accessor and mutator methods.
+
+// Change log:
+// 9/18/2015 EB 
+// - Fixed logic error in the setName method: check the userName instead of mName.
+// - Refactored the name from TransactionModel to Transaction.
+
+
 package model;
 
 //this s/b in a helper file
@@ -17,7 +26,7 @@ import java.sql.SQLException;
 // Responsible for the database; database modifications, and the sending
 // and receiving of data.
 
-public class TransactionModel
+public class Transaction
 {
 	private int mTransactionID;
 
@@ -51,7 +60,7 @@ public class TransactionModel
 					+ "WHERE u.userID = t.userID, "
 					+ "      c.categoryID = t.categoryID;");
 	// constructor
-	TransactionModel()
+	Transaction()
 	{
 		mTransactionID = 0;     // should this be null. what happens on an insert if
 								//  this field is populated.
@@ -130,7 +139,7 @@ public class TransactionModel
 	// this logic will not work --
 	void setName( String userName )
 	{
-		if ( mName != " " )
+		if ( userName != " " )
 		{
 			this.mName = userName;
 		}
@@ -312,5 +321,5 @@ public class TransactionModel
 	} // end of delete method
 
 
-} // end of TransactionModel class
+} // end of Transaction class
 
