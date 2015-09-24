@@ -1,20 +1,16 @@
 package model;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 class AppDb {
-	public static void main(String args[]) throws ClassNotFoundException,
-			SQLException {
+	public static void main(String args[]) throws ClassNotFoundException, SQLException {
 		Connection connection = null;
 		try {
 			Class.forName("org.gjt.mm.mysql.Driver");
-			connection = DriverManager.getConnection(
-					"jdbc:mysql://localhost:3306/roommates", "root",
-					"ammananna");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "ammananna");
 
 			PreparedStatement preparedstatement = null;
 
@@ -47,7 +43,6 @@ class AppDb {
 				try {
 					connection.close();
 				} catch (SQLException se) {
-
 				}
 			}
 		}

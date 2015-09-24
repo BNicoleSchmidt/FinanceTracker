@@ -6,7 +6,6 @@
 // - Fixed logic error in the setName method: check the userName instead of mName.
 // - Refactored the name from TransactionModel to Transaction.
 
-
 package model;
 
 //this s/b in a helper file
@@ -26,44 +25,37 @@ import java.sql.SQLException;
 // Responsible for the database; database modifications, and the sending
 // and receiving of data.
 
-public class Transaction
-{
+public class Transaction {
 	private int mTransactionID;
 
 	private String mTransactionDate;
 	private int mUserID;
-	private String mName;         // user table
+	private String mName; // user table
 	private char mTransactionType;
 	private double mAmount;
 	private int mCategoryID;
 	private String mCategoryName; // category table
 	private String mDescription;
 
-
 	// hidden values
-	private int mHTransactionID;  
+	private int mHTransactionID;
 	private int mHUserID;
-	private String mHName;   
-	private int mHCategoryID;       
-	private String mHCategoryName;  
-	
+	private String mHName;
+	private int mHCategoryID;
+	private String mHCategoryName;
+
 	private String query;
 
-	private static final String tableQuery = (
-			"SELECT transactionID, transactionDate, t.userID,"
-					+ " u.name, transactionType, amount, "
-					+ "categoryID, c.categoryName, "
-					+ "description, "
-					+ "WHERE users.userID = transactions.userID, "
-					+ "categories.categoryID = transaction.categoryID;"
-					+ "FROM users as u, transactions as t, categories as c"
-					+ "WHERE u.userID = t.userID, "
-					+ "      c.categoryID = t.categoryID;");
+	private static final String tableQuery = ("SELECT transactionID, transactionDate, t.userID,"
+			+ " u.name, transactionType, amount, " + "categoryID, c.categoryName, " + "description, "
+			+ "WHERE users.userID = transactions.userID, " + "categories.categoryID = transaction.categoryID;"
+			+ "FROM users as u, transactions as t, categories as c" + "WHERE u.userID = t.userID, "
+			+ "      c.categoryID = t.categoryID;");
+
 	// constructor
-	Transaction()
-	{
-		mTransactionID = 0;     // should this be null. what happens on an insert if
-								//  this field is populated.
+	Transaction() {
+		mTransactionID = 0; // should this be null. what happens on an insert if
+							// this field is populated.
 
 		mTransactionDate = "1/1/2000";
 		mUserID = 0;
@@ -74,7 +66,7 @@ public class Transaction
 		mCategoryName = " ";
 		mHCategoryName = " ";
 		mDescription = " ";
-		
+
 		mHTransactionID = 0;
 		mHUserID = 0;
 		mHName = " ";
@@ -83,46 +75,55 @@ public class Transaction
 	// end of constructor
 
 	// get methods
-	public int getTransactionID()
-	{ return mTransactionID; }
+	public int getTransactionID() {
+		return mTransactionID;
+	}
 
-	public int getUserID()
-	{ return mUserID; }
+	public int getUserID() {
+		return mUserID;
+	}
 
-	public String getName()
-	{ return mName; }
+	public String getName() {
+		return mName;
+	}
 
-	public String getHiddenName()
-	{ return mHName; }
+	public String getHiddenName() {
+		return mHName;
+	}
 
-	public String getTransactionDate()
-	{ return mTransactionDate; }
+	public String getTransactionDate() {
+		return mTransactionDate;
+	}
 
-	public char getTransactionType()
-	{ return mTransactionType; }
+	public char getTransactionType() {
+		return mTransactionType;
+	}
 
-	public double getAmount()
-	{ return mAmount; }
+	public double getAmount() {
+		return mAmount;
+	}
 
-	public int getCategoryID()
-	{ return mCategoryID; }
+	public int getCategoryID() {
+		return mCategoryID;
+	}
 
-	public String getCategoryName()
-	{ return mCategoryName; }
+	public String getCategoryName() {
+		return mCategoryName;
+	}
 
-	public String getHiddenCategoryName()
-	{ return mHCategoryName; }
+	public String getHiddenCategoryName() {
+		return mHCategoryName;
+	}
 
-	public String getDescription()
-	{ return mDescription; }
-
+	public String getDescription() {
+		return mDescription;
+	}
 
 	// set methods
 
 	// transactionID is a hidden field
 	// an auto increment field on insert
-	void setTransactionID( int tranID )
-	{
+	void setTransactionID(int tranID) {
 		this.mTransactionID = tranID;
 		// do nothing
 	}
@@ -131,20 +132,15 @@ public class Transaction
 	// auto increment field on insert
 	// do NOT use set when inserting Users into the db
 	// set when userName changes
-	void setUserID( int uID )
-	{
+	void setUserID(int uID) {
 		this.mUserID = uID;
 	}
 
 	// this logic will not work --
-	void setName( String userName )
-	{
-		if ( userName != " " )
-		{
+	void setName(String userName) {
+		if (userName != " ") {
 			this.mName = userName;
-		}
-		else
-		{
+		} else {
 			// display error msg TODO mg
 			// "Name is a required field."
 		}
@@ -152,30 +148,21 @@ public class Transaction
 
 	// change field to a data type date
 	// TODO mg
-	void setTransactionDate( String tranDate )
-	{
-		if (tranDate != null )
-		{
+	void setTransactionDate(String tranDate) {
+		if (tranDate != null) {
 			this.mTransactionDate = tranDate;
-		}
-		else
-		{
+		} else {
 			// display error msg TODO mg
 			// "Transaction date is a required field."
 		}
 	}
 
-	void setTransactionType( char tranType )
-	{
-		if ( tranType !=  ' ' )
-		{
-			if ( tranType == '-' || tranType == '+' )
-			{
+	void setTransactionType(char tranType) {
+		if (tranType != ' ') {
+			if (tranType == '-' || tranType == '+') {
 				this.mTransactionType = tranType;
 			}
-		}
-		else
-		{
+		} else {
 			// display error msg TODO mg
 			// "Transaction type is a required field."
 		}
@@ -184,28 +171,20 @@ public class Transaction
 	// cheesy edit
 	// test TODO mg
 
-	void setAmount( double amt )
-	{
-		if ( amt >= 0.00 && amt <= 9999999.99  )
-		{
+	void setAmount(double amt) {
+		if (amt >= 0.00 && amt <= 9999999.99) {
 			this.mAmount = amt;
-		}
-		else
-		{
+		} else {
 			// display error msg TODO mg
 
 			// "Amount is a required field and must be a positive number."
 		}
 	}
 
-	void setCategoryID( int cID )
-	{
-		if ( cID > 0 && cID < 99999 )
-		{
+	void setCategoryID(int cID) {
+		if (cID > 0 && cID < 99999) {
 			this.mCategoryID = cID;
-		}
-		else
-		{
+		} else {
 			// display error msg TODO mg
 			// "A category is required."
 		}
@@ -216,35 +195,28 @@ public class Transaction
 
 	// overloaded method
 	// don't know how this is going to be used ... mg TODO
-	void setCategoryID( int cID, String categoryName )
-	{
-		if ( cID > 0 && cID < 99999 )
-		{
+	void setCategoryID(int cID, String categoryName) {
+		if (cID > 0 && cID < 99999) {
 			this.mCategoryID = cID;
-		}
-		else
-		{
+		} else {
 			// display error msg TODO mg
 			// "A category is required."
 		}
 	}
 
-	void setCategoryName( String catName )
-	{
+	void setCategoryName(String catName) {
 		this.mCategoryName = catName;
 	}
 
-
-	void setDescription( String desc )
-	{ this.mDescription = desc; }
-
+	void setDescription(String desc) {
+		this.mDescription = desc;
+	}
 
 	// when a row is selected
 	// load one row to jfields in
 	// jpanel/TransactionUI
-	void load()
-	{
-		// get hidden transactionID from row selected  from resultSet in panel3
+	void load() {
+		// get hidden transactionID from row selected from resultSet in panel3
 		// select transaction with both userName and categoryName
 		// store userName as both a visible field and a hidden field
 		// store categoryName as both a visible field and a hidden field
@@ -252,74 +224,70 @@ public class Transaction
 		//
 		// ??? this logic does not work ???
 		// if ( visible userName != hidden userName
-		//	{ select userID from users where user table userName = visible userName }
-		//  if ( resultSet userID != hidden userID )
-		//  { You have a new user, insert new user into user table
-		//    select to get new userID (an auto increment field)
-		//    set hidden userID with new userID }
-		//  does not protect against duplicate names.  How to prevent duplicate
-		//  users.    Make userID and userName a concatenated key???
-		//  store User names as an upper case letter followed by lower case letters
+		// { select userID from users where user table userName = visible
+		// userName }
+		// if ( resultSet userID != hidden userID )
+		// { You have a new user, insert new user into user table
+		// select to get new userID (an auto increment field)
+		// set hidden userID with new userID }
+		// does not protect against duplicate names. How to prevent duplicate
+		// users. Make userID and userName a concatenated key???
+		// store User names as an upper case letter followed by lower case
+		// letters
 		//
 		//
-		//  same process for category name...
-	}  // end of load
-
-
+		// same process for category name...
+	} // end of load
 
 	// TODO mg this INSERT statement is not in the correct format!!!
 	//
-	PreparedStatement onSave( int tID, String tDate, int tUserID, char tType,
-			double tAmount, int tCategoryID, String Description ) throws SQLException
-	{
-		if ( mTransactionID == 0 )
-		{
+	PreparedStatement onSave(int tID, String tDate, int tUserID, char tType, double tAmount, int tCategoryID,
+			String Description) throws SQLException {
+		if (mTransactionID == 0) {
 			// declare preparedStatement
 			PreparedStatement prepInsertStmt = null;
 
 			// declare insertQuery variable
 			// transactionID is an auto increment field
-			String insertQuery = ("INSERT INTO transactions"
-					+ " TransactionDate,"
-					+ " userID, TransactionType, Amount,"
-					+ " categoryID, description "
-					+ " VALUES( ?, ?, ?, ?, ?, ? )");
+			String insertQuery = ("INSERT INTO transactions" + " TransactionDate," + " userID, TransactionType, Amount,"
+					+ " categoryID, description " + " VALUES( ?, ?, ?, ?, ?, ? )");
 
-			//TODO mg the prepared statement requires a connection...you knew that ;)
+			// TODO mg the prepared statement requires a connection...you knew
+			// that ;)
 			// prepInsertStmt = connection.prepareStatement( insertQuery );
 
 			// populate ?s
-			//prepInsertStmt = setInt(1, getTransactionID() ); // TODO should this be a null value
-			prepInsertStmt.setString( 2, getTransactionDate() );
-			prepInsertStmt.setInt( 3, getUserID() );
-			prepInsertStmt.setString( 4, ""+ getTransactionType() ); // TODO mg How is this supposed to work
-			prepInsertStmt.setString( 5, getCategoryName() );
-			prepInsertStmt.setString( 6, getDescription() );
+			// prepInsertStmt = setInt(1, getTransactionID() ); // TODO should
+			// this be a null value
+			prepInsertStmt.setString(2, getTransactionDate());
+			prepInsertStmt.setInt(3, getUserID());
+			prepInsertStmt.setString(4, "" + getTransactionType()); // TODO mg
+																	// How is
+																	// this
+																	// supposed
+																	// to work
+			prepInsertStmt.setString(5, getCategoryName());
+			prepInsertStmt.setString(6, getDescription());
 
-			return ( prepInsertStmt );
-		}
-		else
-		{
+			return (prepInsertStmt);
+		} else {
 			PreparedStatement prepUpdateStmt = null;
-			String query = (" UPDATE transactions  SET ?,?,?,?,?,?  WHERE transactionID = mUserID" );
+			String query = (" UPDATE transactions  SET ?,?,?,?,?,?  WHERE transactionID = mUserID");
 
-			prepUpdateStmt.setInt( 1, getTransactionID() );
-			prepUpdateStmt.setString( 2, getTransactionDate() );
-			prepUpdateStmt.setInt( 3, getUserID() );
-			prepUpdateStmt.setString( 4, "" + getTransactionType() );
-			prepUpdateStmt.setDouble( 5, getAmount() );
-			prepUpdateStmt.setInt( 6, getCategoryID() );
-//			prepUpdateStmt.setString( 7, description = mDescription "
-//					+
-			return ( prepUpdateStmt );
+			prepUpdateStmt.setInt(1, getTransactionID());
+			prepUpdateStmt.setString(2, getTransactionDate());
+			prepUpdateStmt.setInt(3, getUserID());
+			prepUpdateStmt.setString(4, "" + getTransactionType());
+			prepUpdateStmt.setDouble(5, getAmount());
+			prepUpdateStmt.setInt(6, getCategoryID());
+			// prepUpdateStmt.setString( 7, description = mDescription "
+			// +
+			return (prepUpdateStmt);
 		}
 	}// end of onSave method
 
-	String delete( int tranID )
-	{
+	String delete(int tranID) {
 		return "DELETE FROM transactions WHERE transactionID = tranID;";
 	} // end of delete method
 
-
 } // end of Transaction class
-
