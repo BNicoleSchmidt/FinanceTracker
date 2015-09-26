@@ -111,9 +111,9 @@ public class FinanceTracker extends JFrame {
 
 		/*** jPanel 2 ***/
 
-		// JTextField jErrorMessage = new JTextField();
-		// jPanel2.add( jErrorMessage );
-		// jErrorMessage.setVisible( true );
+		JTextField jErrorMessage = new JTextField();
+		jPanel2.add(jErrorMessage);
+		jErrorMessage.setVisible(true);
 
 		/*** jPanel3 ***/
 

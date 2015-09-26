@@ -12,7 +12,7 @@ public class DbDemoMain {
 		try {
 			// We get the connection in the try and close it in the finally
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "ammananna");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "root");
 
 		} catch (SQLException se) {
 			// This reports any exceptions that occurred during querying,
