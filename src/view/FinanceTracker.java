@@ -42,7 +42,7 @@ public class FinanceTracker extends JFrame {
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JPanel jPanel1 = new JPanel();
+		JPanel jPanel1 = new JPanel(); // new instance of JPanel1
 
 		// this.getRootPane().add( jPanel1 );
 		this.add(jPanel1);
@@ -55,7 +55,6 @@ public class FinanceTracker extends JFrame {
 		jUserName = new JTextField("Name", 20);
 		jPanel1.add(jUserName);
 		jUserName.setVisible(true);
-		;
 
 		jTransactionDate = new JTextField("Date");
 		jPanel1.add(jTransactionDate);
@@ -110,9 +109,13 @@ public class FinanceTracker extends JFrame {
 		jHCategoryName.setVisible(true);
 
 		/*** jPanel 2 ***/
+		JPanel jPanel3 = new JPanel();
 
-		JTextField jErrorMessage = new JTextField();
-		jPanel2.add(jErrorMessage);
+		this.add(jPanel3);
+		setLayout(new GridLayout(2, 8));
+
+		JTextField jErrorMessage = new JTextField("Error Message: ", 80);
+		jPanel3.add(jErrorMessage);
 		jErrorMessage.setVisible(true);
 
 		/*** jPanel3 ***/
