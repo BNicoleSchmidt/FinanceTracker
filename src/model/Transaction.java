@@ -2,11 +2,14 @@
 // It provides the accessor and mutator methods.
 
 // Change log:
-// 9/18/2015 EB 
+// 9/18/2015 EB
 // - Fixed logic error in the setName method: check the userName instead of mName.
 // - Refactored the name from TransactionModel to Transaction.
 
 package model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 //this s/b in a helper file
 // source rosettacode.org/wiki/Determine_if_a_string_is_numeric
@@ -20,7 +23,10 @@ package model;
 //}
 //
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 // Responsible for the database; database modifications, and the sending
 // and receiving of data.
@@ -214,30 +220,84 @@ public class Transaction {
 
 	// when a row is selected
 	// load one row to jfields in
-	// jpanel/TransactionUI
-	void load() {
-		// get hidden transactionID from row selected from resultSet in panel3
-		// select transaction with both userName and categoryName
-		// store userName as both a visible field and a hidden field
-		// store categoryName as both a visible field and a hidden field
-		// store resultSet in top panel of screen
-		//
-		// ??? this logic does not work ???
-		// if ( visible userName != hidden userName
-		// { select userID from users where user table userName = visible
-		// userName }
-		// if ( resultSet userID != hidden userID )
-		// { You have a new user, insert new user into user table
-		// select to get new userID (an auto increment field)
-		// set hidden userID with new userID }
-		// does not protect against duplicate names. How to prevent duplicate
-		// users. Make userID and userName a concatenated key???
-		// store User names as an upper case letter followed by lower case
-		// letters
-		//
-		//
-		// same process for category name...
-	} // end of load
+	// jpanel1/TransactionUI
+
+	// CGJAVA- 32 Add static method loadAll()
+	public static ArrayList<Transaction> loadAll() {
+		// throws ClassNotFoundException SQLException {
+
+		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+
+		Connection connection = null;
+		try {
+			Class.forName("com.mysql.jbdc.Driver");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "root");
+
+			Statement stmt = connection.createStatement();
+			ResultSet rs;
+
+			try {
+
+				rs = stmt.executeQuery("Select * from records");
+				while (rs.next()) {
+					Transaction tran = new Transaction();
+					tran.setTransactionID(rs.getInt("transactionID"));
+					tran.setName(rs.getString("name"));
+					tran.setTransactionDate(rs.getString("transactionDate"));
+					transactionList.add(tran);
+				}
+
+				int sz = transactionList.size();
+
+				// print out the list - code test
+				for (int i = 0; i < sz; i++) {
+					System.out.println((transactionList.get(i)).getTransactionID());
+					System.out.println((transactionList.get(i)).getName());
+					System.out.println((transactionList.get(i)).getTransactionDate());
+				}
+
+			}
+
+			catch (SQLException e) {
+				System.out.println("Got the SQL Exception " + e.getMessage());
+				e.printStackTrace();
+			}
+		} catch (SQLException | ClassNotFoundException e) {
+			System.out.println("Got the SQL Exception " + e.getMessage());
+			e.printStackTrace();
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException se) {
+
+				}
+			}
+		}
+		return transactionList;
+	} // end of loadALL()
+
+	// get hidden transactionID from row selected from resultSet in panel3
+	// select transaction with both userName and categoryName
+	// store userName as both a visible field and a hidden field
+	// store categoryName as both a visible field and a hidden field
+	// store resultSet in top panel of screen
+	//
+	// ??? this logic does not work ???
+	// if ( visible userName != hidden userName
+	// { select userID from users where user table userName = visible
+	// userName }
+	// if ( resultSet userID != hidden userID )
+	// { You have a new user, insert new user into user table
+	// select to get new userID (an auto increment field)
+	// set hidden userID with new userID }
+	// does not protect against duplicate names. How to prevent duplicate
+	// users. Make userID and userName a concatenated key???
+	// store User names as an upper case letter followed by lower case
+	// letters
+	//
+	//
+	// same process for category name...
 
 	// TODO mg this INSERT statement is not in the correct format!!!
 	//
