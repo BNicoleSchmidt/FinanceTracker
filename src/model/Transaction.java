@@ -254,17 +254,19 @@ public class Transaction {
 					System.out.println((transactionList.get(i)).getTransactionID());
 					System.out.println((transactionList.get(i)).getName());
 					System.out.println((transactionList.get(i)).getTransactionDate());
-				}
+				} // for
 
-			}
+			} // try
 
 			catch (SQLException e) {
 				System.out.println("Got the SQL Exception " + e.getMessage());
 				e.printStackTrace();
+				throw e;
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			System.out.println("Got the SQL Exception " + e.getMessage());
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
 			if (connection != null) {
 				try {
