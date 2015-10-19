@@ -8,25 +8,18 @@
 
 package model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 //this s/b in a helper file
 // source rosettacode.org/wiki/Determine_if_a_string_is_numeric
 //
 // public static boolean isNumeric(String inputData) {
 // return inputData.matches("[-+]?\\d+(\\.\\d+)?"); }
-
 //public static boolean isNumeric(String inputData)
 //{
 //	  return inputData.matches("?\\d+\\.\\d+?");
 //}
 //
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 // Responsible for the database; database modifications, and the sending
 // and receiving of data.
@@ -78,6 +71,7 @@ public class Transaction {
 		mHName = " ";
 		mHCategoryID = 0;
 	};
+
 	// end of constructor
 
 	// get methods
@@ -223,62 +217,47 @@ public class Transaction {
 	// jpanel1/TransactionUI
 
 	// CGJAVA- 32 Add static method loadAll()
-	public static ArrayList<Transaction> loadAll() {
-		// throws ClassNotFoundException SQLException {
-
-		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
-
-		Connection connection = null;
-		try {
-			Class.forName("com.mysql.jbdc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "root");
-
-			Statement stmt = connection.createStatement();
-			ResultSet rs;
-
-			try {
-
-				rs = stmt.executeQuery("Select * from records");
-				while (rs.next()) {
-					Transaction tran = new Transaction();
-					tran.setTransactionID(rs.getInt("transactionID"));
-					tran.setName(rs.getString("name"));
-					tran.setTransactionDate(rs.getString("transactionDate"));
-					transactionList.add(tran);
-				}
-
-				int sz = transactionList.size();
-
-				// print out the list - code test
-				for (int i = 0; i < sz; i++) {
-					System.out.println((transactionList.get(i)).getTransactionID());
-					System.out.println((transactionList.get(i)).getName());
-					System.out.println((transactionList.get(i)).getTransactionDate());
-				} // for
-
-			} // try
-
-			catch (SQLException e) {
-				System.out.println("Got the SQL Exception " + e.getMessage());
-				e.printStackTrace();
-				throw e;
-			}
-		} catch (SQLException | ClassNotFoundException e) {
-			System.out.println("Got the SQL Exception " + e.getMessage());
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException se) {
-
-				}
-			}
-		}
-		return transactionList;
-	} // end of loadALL()
-
+	/**
+	 * public static ArrayList<Transaction> loadAll() { // throws
+	 * ClassNotFoundException SQLException {
+	 *
+	 * ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+	 *
+	 * Connection connection = null; try {
+	 * Class.forName("com.mysql.jbdc.Driver"); connection =
+	 * DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates",
+	 * "root", "LaLaland2012");
+	 *
+	 * Statement stmt = connection.createStatement(); ResultSet rs;
+	 *
+	 * try {
+	 *
+	 * rs = stmt.executeQuery("Select * from records"); while (rs.next()) {
+	 * Transaction tran = new Transaction();
+	 * tran.setTransactionID(rs.getInt("transactionID"));
+	 * tran.setName(rs.getString("name"));
+	 * tran.setTransactionDate(rs.getString("transactionDate"));
+	 * transactionList.add(tran); }
+	 *
+	 * int sz = transactionList.size();
+	 *
+	 * // print out the list - code test for (int i = 0; i < sz; i++) {
+	 * System.out.println((transactionList.get(i)).getTransactionID());
+	 * System.out.println((transactionList.get(i)).getName());
+	 * System.out.println((transactionList.get(i)).getTransactionDate()); } //
+	 * for
+	 *
+	 * } // try
+	 *
+	 * catch (SQLException e) { System.out.println("Got the SQL Exception " +
+	 * e.getMessage()); e.printStackTrace(); throw e; } } catch (SQLException |
+	 * ClassNotFoundException e) { System.out.println("Got the SQL Exception " +
+	 * e.getMessage()); e.printStackTrace(); throw new RuntimeException(e); }
+	 * finally { if (connection != null) { try { connection.close(); } catch
+	 * (SQLException se) {
+	 *
+	 * } } } return transactionList; } // end of loadALL()
+	 ***/
 	// get hidden transactionID from row selected from resultSet in panel3
 	// select transaction with both userName and categoryName
 	// store userName as both a visible field and a hidden field
@@ -311,8 +290,8 @@ public class Transaction {
 
 			// declare insertQuery variable
 			// transactionID is an auto increment field
-			String insertQuery = ("INSERT INTO transactions" + " TransactionDate," + " userID, TransactionType, Amount,"
-					+ " categoryID, description " + " VALUES( ?, ?, ?, ?, ?, ? )");
+			String insertQuery = ("INSERT INTO transactions" + " TransactionDate,"
+					+ " userID, TransactionType, Amount," + " categoryID, description " + " VALUES( ?, ?, ?, ?, ?, ? )");
 
 			// TODO mg the prepared statement requires a connection...you knew
 			// that ;)
@@ -353,3 +332,4 @@ public class Transaction {
 	} // end of delete method
 
 } // end of Transaction class
+
