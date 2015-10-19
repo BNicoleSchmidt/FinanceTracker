@@ -1,4 +1,17 @@
 package view;
+
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import model.AppDb;
+import model.Transaction;
 /**
  *
  * @Date 8/9/15
@@ -6,15 +19,9 @@ package view;
  * responsibilities: user interface layout; display of transactions table resultSet
  *                   notification of changes
  **/
-
-import java.awt.GridLayout;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import java.awt.event.WindowAdapter;
+import java.awt.GridLayout;
 
 public class FinanceTracker extends JFrame {
 	private JTextField jTransactionID;
@@ -26,7 +33,7 @@ public class FinanceTracker extends JFrame {
 	private JTextField jTransactionType;
 	private JTextField jCategoryName;
 	private JTextField jDescription;
-	private JTextField jErrorMessage;
+	// private JTextField jErrorMessage;
 
 	// hidden fields
 	private JTextField jHTransactionID;
@@ -38,7 +45,10 @@ public class FinanceTracker extends JFrame {
 	public FinanceTracker() {
 		// Create and show GUI
 		super("Finance Tracker");
-		setLayout(new GridLayout(3, 1));
+
+		System.out.println("You are in FinanceTracker constructor   FinanaceTracker.java"); // mmgg
+
+		// setLayout(new GridLayout(3, 1));
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -46,7 +56,7 @@ public class FinanceTracker extends JFrame {
 
 		// this.getRootPane().add( jPanel1 );
 		this.add(jPanel1);
-		setLayout(new GridLayout(2, 8));
+		// setLayout(new FlowLayout());
 
 		jTransactionID = new JTextField("ID", 8); // s/b hidden field TODO mg
 		jPanel1.add(jTransactionID);
@@ -55,9 +65,8 @@ public class FinanceTracker extends JFrame {
 		jUserName = new JTextField("Name", 20);
 		jPanel1.add(jUserName);
 		jUserName.setVisible(true);
-		;
 
-		jTransactionDate = new JTextField("Date");
+		jTransactionDate = new JTextField("Date", 10);
 		jPanel1.add(jTransactionDate);
 		jTransactionDate.setVisible(true);
 
@@ -86,9 +95,9 @@ public class FinanceTracker extends JFrame {
 		jSaveButton.setVisible(true);
 		/*****/
 		JPanel jPanel2 = new JPanel();
+		setLayout(new GridLayout(1, 4));
 
 		this.add(jPanel2);
-		setLayout(new GridLayout(2, 8));
 
 		jHUserID = new JTextField("Hidden Uid", 10); // s/b hidden field TODO mg
 		jPanel2.add(jHUserID);
@@ -116,6 +125,35 @@ public class FinanceTracker extends JFrame {
 		// jErrorMessage.setVisible( true );
 
 		/*** jPanel3 ***/
+
+		// DefaultTableModel model = new DefaultTableModel();
+		JTable table = new JTable();
+		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		JPanel jPanel3 = new JPanel();
+		JScrollPane scrollPane = new JScrollPane(table);
+
+		AppDb appDb = new AppDb();
+		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
+		transactionList = appDb.loadAll();
+
+		model.addColumn("User ID");
+		model.addColumn("Name");
+		model.addColumn("Transaction Date");
+		model.addColumn("Category");
+		// model.addColumn("Amount");
+		// model.addColumn("Description");
+
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);// why is this constant
+														// not
+		// being pulled from the swing.JTable import file?
+
+		for (int i = 0; i < transactionList.size(); i++) {
+			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
+					transactionList.get(i).getTransactionDate(), transactionList.get(i).getCategoryName() });
+		}
+
+		jPanel3.add(scrollPane);
+		this.add(jPanel3);
 
 	} // end of Display constructor
 
