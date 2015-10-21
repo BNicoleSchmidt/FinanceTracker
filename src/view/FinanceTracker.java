@@ -1,17 +1,7 @@
 package view;
 
-import java.util.ArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-
-import model.AppDb;
-import model.Transaction;
+import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
 /**
  *
  * @Date 8/9/15
@@ -20,8 +10,21 @@ import model.Transaction;
  *                   notification of changes
  **/
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.GridLayout;
+import java.util.ArrayList;
+
+import javax.swing.BoxLayout;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+
+import model.AppDb;
+import model.Transaction;
 
 public class FinanceTracker extends JFrame {
 	private JTextField jTransactionID;
@@ -44,17 +47,20 @@ public class FinanceTracker extends JFrame {
 
 	public FinanceTracker() {
 		// Create and show GUI
-		super("Finance Tracker");
+		super("Finance Tracker CGJAVA-15");
 
 		System.out.println("You are in FinanceTracker constructor   FinanaceTracker.java"); // mmgg
-
-		// setLayout(new GridLayout(3, 1));
+		setLayout(new GridLayout(4, 1)); // 4 rows one column
+		JPanel jPanel1, jPanel2, jPanel3, jPanel4; // layout experiment mg
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		JPanel jPanel1 = new JPanel();
+		jPanel1 = new JPanel();
 
 		// this.getRootPane().add( jPanel1 );
+		jPanel1.setLayout(new BoxLayout(jPanel1, BoxLayout.PAGE_AXIS)); // CGJAVA-15
+																		// UI
+
 		this.add(jPanel1);
 		// setLayout(new FlowLayout());
 
@@ -74,12 +80,8 @@ public class FinanceTracker extends JFrame {
 		jPanel1.add(jTransactionAmount);
 		jTransactionAmount.setVisible(true);
 
-		jTransactionType = new JTextField("Type", 6); // There seems to be some
-														// disagreement, create
-														// table indicates 'c'
-														// or 'd'
-		jPanel1.add(jTransactionType); // Coded Insert indicates, '+' or '-'.
-										// TODO mg
+		jTransactionType = new JTextField("Type", 6);
+		jPanel1.add(jTransactionType);
 		jTransactionType.setVisible(true);
 
 		jCategoryName = new JTextField("Category", 20);
@@ -94,8 +96,10 @@ public class FinanceTracker extends JFrame {
 		jPanel1.add(jSaveButton);
 		jSaveButton.setVisible(true);
 		/*****/
-		JPanel jPanel2 = new JPanel();
-		setLayout(new GridLayout(1, 4));
+		jPanel2 = new JPanel();
+		jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.LINE_AXIS)); // CGJAVA-15
+																		// UI
+		// setLayout(new GridLayout(1, 4));
 
 		this.add(jPanel2);
 
@@ -118,6 +122,7 @@ public class FinanceTracker extends JFrame {
 		jPanel2.add(jHCategoryName);
 		jHCategoryName.setVisible(true);
 
+		this.add(jPanel2);
 		/*** jPanel 2 ***/
 
 		// JTextField jErrorMessage = new JTextField();
@@ -129,8 +134,10 @@ public class FinanceTracker extends JFrame {
 		// DefaultTableModel model = new DefaultTableModel();
 		JTable table = new JTable();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		JPanel jPanel3 = new JPanel();
-		JScrollPane scrollPane = new JScrollPane(table);
+
+		jPanel3 = new JPanel();
+		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS); // CGJAVA-15 UI
 
 		AppDb appDb = new AppDb();
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
@@ -140,12 +147,10 @@ public class FinanceTracker extends JFrame {
 		model.addColumn("Name");
 		model.addColumn("Transaction Date");
 		model.addColumn("Category");
-		// model.addColumn("Amount");
-		// model.addColumn("Description");
+		model.addColumn("Amount");
+		model.addColumn("Description");
 
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);// why is this constant
-														// not
-		// being pulled from the swing.JTable import file?
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		for (int i = 0; i < transactionList.size(); i++) {
 			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
@@ -154,6 +159,31 @@ public class FinanceTracker extends JFrame {
 
 		jPanel3.add(scrollPane);
 		this.add(jPanel3);
+
+		// CGJAVA-15 Add Total Deposits
+		jPanel4 = new JPanel();
+		jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.X_AXIS));// CGJAVA-15
+																	// ui
+		{
+			JLabel totalDepositsLabel = new JLabel("Total Deposits: ", JLabel.LEFT);
+			jPanel4.add(totalDepositsLabel);
+			String d = Transaction.totalDeposits(transactionList);
+			JLabel tDLabel = new JLabel(d);
+			jPanel4.add(tDLabel);
+		}
+
+		JLabel spLabel = new JLabel("     ", JLabel.CENTER);
+		jPanel4.add(spLabel);
+
+		{
+			JLabel totalWithdrawalsLabel = new JLabel("Total Withdrawals: ", JLabel.RIGHT);
+			jPanel4.add(totalWithdrawalsLabel);
+			String w = Transaction.totalWithdrawals(transactionList);
+			JLabel tWLabel = new JLabel(w);
+			jPanel4.add(tWLabel);
+		}
+
+		this.add(jPanel4);
 
 	} // end of Display constructor
 

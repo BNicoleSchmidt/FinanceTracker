@@ -23,7 +23,7 @@ public class AppDb {
 		Connection connection = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "LaLaland2012");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "root");
 
 			Statement stmt = connection.createStatement();
 			ResultSet rs;
@@ -35,8 +35,9 @@ public class AppDb {
 					Transaction tran = new Transaction();
 					tran.setTransactionID(rs.getInt("transactionID"));
 					tran.setName(rs.getString("name"));
-					// tran.setDate(rs.getDate("transactionDate"));
+					tran.setTransactionType(rs.getString("transactionType").charAt(0)); // CGJAVA-15
 					tran.setTransactionDate(rs.getString("transactionDate"));
+					tran.setAmount(rs.getDouble("Amount")); // CGJAVA-15
 					tran.setCategoryName(rs.getString("categoryName"));
 					transactionList.add(tran);
 				}
@@ -48,7 +49,9 @@ public class AppDb {
 					System.out.println((transactionList.get(i)).getTransactionID());
 					System.out.println((transactionList.get(i)).getName());
 					System.out.println((transactionList.get(i)).getTransactionDate());
+					System.out.println((transactionList.get(i)).getTransactionType());
 					System.out.println((transactionList.get(i)).getCategoryName());
+					System.out.println((transactionList.get(i)).getAmount());
 				}
 
 			}

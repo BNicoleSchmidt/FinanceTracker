@@ -18,11 +18,11 @@ alter table Categories AUTO_INCREMENT=1;
  			-- Transactions table
 
 insert into Transactions (transactionDate, userID, transactionType, amount, categoryID, description) 
-                  VALUES ("2015-01-01", 1, 'D', 300, 1, "Miscellaneous expense"); 
+                  VALUES ("2015-01-01", 1, 'W', 300.33, 1, "Miscellaneous expense"); 
 insert into Transactions (transactionDate, userID, transactionType, amount, categoryID, description) 
-                  VALUES ("2015-03-01", 2, 'D', 500, 2, "Description 2"); 
+                  VALUES ("2015-03-01", 2, 'D', 500.00, 2, "Description 2"); 
 insert into Transactions (transactionDate, userID, transactionType, amount, categoryID, description) 
-                  VALUES ("2015-06-01", 3, 'D', 876, 3, "Description 3"); 
+                  VALUES ("2015-06-01", 3, 'W', 876.10, 3, "Description 3"); 
 
 			-- Users table
 

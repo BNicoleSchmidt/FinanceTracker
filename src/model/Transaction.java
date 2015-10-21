@@ -20,6 +20,8 @@ package model;
 //
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 // Responsible for the database; database modifications, and the sending
 // and receiving of data.
@@ -59,7 +61,7 @@ public class Transaction {
 		mTransactionDate = "1/1/2000";
 		mUserID = 0;
 		mName = " ";
-		mTransactionType = '-';
+		mTransactionType = ' '; // CGJAVA-15
 		mAmount = 0.00;
 		mCategoryID = 0;
 		mCategoryName = " ";
@@ -158,14 +160,8 @@ public class Transaction {
 	}
 
 	void setTransactionType(char tranType) {
-		if (tranType != ' ') {
-			if (tranType == '-' || tranType == '+') {
-				this.mTransactionType = tranType;
-			}
-		} else {
-			// display error msg TODO mg
-			// "Transaction type is a required field."
-		}
+		// CGJAVA-15
+		this.mTransactionType = tranType;
 	}
 
 	// cheesy edit
@@ -212,11 +208,44 @@ public class Transaction {
 		this.mDescription = desc;
 	}
 
+	// CGJAVA-15
+	public static String totalDeposits(ArrayList<Transaction> transactionList) {
+		double total = 0;
+
+		int sz = transactionList.size();
+		for (int i = 0; i < sz; i++) {
+			System.out.println((transactionList.get(i)).getTransactionType());
+			System.out.println((transactionList.get(i)).getAmount());
+			if (transactionList.get(i).getTransactionType() == 'D') {
+				total += ((transactionList.get(i)).getAmount());
+				System.out.println((transactionList.get(i)).getAmount());
+			} // end of if
+		}
+		String dTotal = new DecimalFormat("0.00").format(total);
+		return dTotal;
+	}
+
+	// CGJAVA-12
+	public static String totalWithdrawals(ArrayList<Transaction> transactionList) {
+		double total = 0;
+
+		int sz = transactionList.size();
+		for (int i = 0; i < sz; i++) {
+			System.out.println((transactionList.get(i)).getTransactionType());
+			System.out.println((transactionList.get(i)).getAmount());
+			if (transactionList.get(i).getTransactionType() == 'W') {
+				total += ((transactionList.get(i)).getAmount());
+				System.out.println((transactionList.get(i)).getAmount());
+			} // end of if
+		}
+		String wTotal = new DecimalFormat("0.00").format(total);
+		return wTotal;
+	}
+
 	// when a row is selected
 	// load one row to jfields in
 	// jpanel1/TransactionUI
 
-	// CGJAVA- 32 Add static method loadAll()
 	/**
 	 * public static ArrayList<Transaction> loadAll() { // throws
 	 * ClassNotFoundException SQLException {
@@ -290,8 +319,8 @@ public class Transaction {
 
 			// declare insertQuery variable
 			// transactionID is an auto increment field
-			String insertQuery = ("INSERT INTO transactions" + " TransactionDate,"
-					+ " userID, TransactionType, Amount," + " categoryID, description " + " VALUES( ?, ?, ?, ?, ?, ? )");
+			String insertQuery = ("INSERT INTO transactions" + " TransactionDate," + " userID, TransactionType, Amount,"
+					+ " categoryID, description " + " VALUES( ?, ?, ?, ?, ?, ? )");
 
 			// TODO mg the prepared statement requires a connection...you knew
 			// that ;)
@@ -302,11 +331,7 @@ public class Transaction {
 			// this be a null value
 			prepInsertStmt.setString(2, getTransactionDate());
 			prepInsertStmt.setInt(3, getUserID());
-			prepInsertStmt.setString(4, "" + getTransactionType()); // TODO mg
-																	// How is
-																	// this
-																	// supposed
-																	// to work
+			prepInsertStmt.setString(4, "" + getTransactionType());
 			prepInsertStmt.setString(5, getCategoryName());
 			prepInsertStmt.setString(6, getDescription());
 
@@ -332,4 +357,3 @@ public class Transaction {
 	} // end of delete method
 
 } // end of Transaction class
-
