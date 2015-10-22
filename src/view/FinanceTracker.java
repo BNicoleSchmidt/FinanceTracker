@@ -13,7 +13,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -143,18 +142,21 @@ public class FinanceTracker extends JFrame {
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 		transactionList = appDb.loadAll();
 
-		model.addColumn("User ID");
+		model.addColumn("T-ID");
 		model.addColumn("Name");
-		model.addColumn("Transaction Date");
-		model.addColumn("Category");
+		model.addColumn("T-Date");
+		model.addColumn("T-Type");
 		model.addColumn("Amount");
+		model.addColumn("Category");
 		model.addColumn("Description");
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		for (int i = 0; i < transactionList.size(); i++) {
 			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
-					transactionList.get(i).getTransactionDate(), transactionList.get(i).getCategoryName() });
+					transactionList.get(i).getTransactionDate(), transactionList.get(i).getTransactionType(),
+					transactionList.get(i).getAmount(), transactionList.get(i).getCategoryName(),
+					transactionList.get(i).getDescription() });
 		}
 
 		jPanel3.add(scrollPane);
