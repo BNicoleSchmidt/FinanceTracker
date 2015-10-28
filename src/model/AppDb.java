@@ -16,7 +16,7 @@ public class AppDb {
 	// public ArrayList<Transaction> getData() {
 	public ArrayList<Transaction> loadAll() {
 		// throws ClassNotFoundException SQLException {
-		System.out.println("You are in loadAll of AppDb.java"); // mmgg
+		System.out.println("You are in loadAll of AppDb.java"); //
 
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 

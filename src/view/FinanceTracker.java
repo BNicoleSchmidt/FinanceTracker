@@ -1,6 +1,9 @@
 package view;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 /**
  *
@@ -13,7 +16,6 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,12 +23,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import model.AppDb;
+import model.DeleteTransaction;
 import model.Transaction;
 
-public class FinanceTracker extends JFrame {
+public class FinanceTracker extends JFrame implements ActionListener {
 	private JTextField jTransactionID;
 	private JTextField jUserID;
 	private JTextField jCategoryID;
@@ -45,13 +51,24 @@ public class FinanceTracker extends JFrame {
 	private JTextField jHCategoryID;
 	private JTextField jHCategoryName;
 
+	static JTable table = new JTable();
+	ArrayList<Transaction> transactionList;
+
+	// selected transaction id
+	int tableRow = 0;
+	int tableColumn = 0;
+
+	static int selectedTransactionID = 0;
+
 	public FinanceTracker() {
 		// Create and show GUI
-		super("Finance Tracker CGJAVA-15");
+		super("Finance Tracker CGJAVA-21");
 
 		System.out.println("You are in FinanceTracker constructor   FinanaceTracker.java"); // mmgg
 		setLayout(new GridLayout(4, 1)); // 4 rows one column
-		JPanel jPanel1, jPanel2, jPanel3, jPanel4; // layout experiment mg
+		JPanel jPanel1, jPanel2, jPanel3, jPanel4; // layout
+													// experiment
+		// mg
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -95,6 +112,7 @@ public class FinanceTracker extends JFrame {
 		JButton jSaveButton = new JButton("Save");
 		jPanel1.add(jSaveButton);
 		jSaveButton.setVisible(true);
+
 		/*****/
 		jPanel2 = new JPanel();
 		jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.LINE_AXIS)); // CGJAVA-15
@@ -125,24 +143,22 @@ public class FinanceTracker extends JFrame {
 		this.add(jPanel2);
 		/*** jPanel 2 ***/
 
-		// JTextField jErrorMessage = new JTextField();
-		// jPanel2.add( jErrorMessage );
-		// jErrorMessage.setVisible( true );
-
+		/**
+		 * jPanel2a = new JPanel();
+		 *
+		 * JTextField jErrorMessage = new JTextField();
+		 * jPanel2a.add(jErrorMessage); jErrorMessage.setVisible(true);
+		 * this.add(jPanel2a);
+		 **/
 		/*** jPanel3 ***/
 
-		// DefaultTableModel model = new DefaultTableModel();
-		JTable table = new JTable();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 
 		jPanel3 = new JPanel();
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS); // CGJAVA-15 UI
 
-		AppDb appDb = new AppDb();
-		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
-		transactionList = appDb.loadAll();
-
+		// build table model
 		model.addColumn("User ID");
 		model.addColumn("Name");
 		model.addColumn("Transaction Date");
@@ -150,7 +166,21 @@ public class FinanceTracker extends JFrame {
 		model.addColumn("Amount");
 		model.addColumn("Description");
 
+		// select one row
+		table.setFillsViewportHeight(true);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+		table.getSelectionModel().addListSelectionListener(new RowListener());
+
+		// create AppDB object
+		AppDb appDb = new AppDb();
+
+		// create transaction list to hold data
+		transactionList = new ArrayList<Transaction>();
+
+		// load DB data from DB
+		transactionList = appDb.loadAll();
 
 		for (int i = 0; i < transactionList.size(); i++) {
 			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
@@ -160,10 +190,27 @@ public class FinanceTracker extends JFrame {
 		jPanel3.add(scrollPane);
 		this.add(jPanel3);
 
-		// CGJAVA-15 Add Total Deposits
 		jPanel4 = new JPanel();
-		jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.X_AXIS));// CGJAVA-15
-																	// ui
+
+		// CGJAVA-21 Delete a Transaction - set up buttons for deletes and
+		// archiving
+		JButton deleteButton = new JButton("Delete");
+		JButton archiveButton = new JButton("Archive");
+
+		jPanel4.add(deleteButton);
+		jPanel4.add(archiveButton);// Future feature
+
+		deleteButton.setMnemonic(KeyEvent.VK_D);
+		archiveButton.setMnemonic(KeyEvent.VK_A);
+
+		deleteButton.setToolTipText("Click this button to delete transaction.");
+		archiveButton.setToolTipText("Future Feature! Click this button to save transaction to History");
+
+		deleteButton.addActionListener(this);
+		archiveButton.addActionListener(this);
+		// CGJAVA-15 Add Total Deposits
+
+		// jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.X_AXIS));//
 		{
 			JLabel totalDepositsLabel = new JLabel("Total Deposits: ", JLabel.LEFT);
 			jPanel4.add(totalDepositsLabel);
@@ -184,8 +231,50 @@ public class FinanceTracker extends JFrame {
 		}
 
 		this.add(jPanel4);
-
 	} // end of Display constructor
+
+	public int getSelectedTransactionID() {
+		return selectedTransactionID;
+	}
+
+	void setSelectedTransactionID() {
+
+	}
+
+	private class RowListener implements ListSelectionListener {
+		public void valueChanged(ListSelectionEvent event) {
+			if (event.getValueIsAdjusting())
+				return;
+			System.out.println("RowListener");
+			outputSelection();
+		}
+	}
+
+	private void outputSelection() {
+		System.out.printf("Lead %d, %d\n", table.getSelectionModel().getLeadSelectionIndex(), 0);
+		tableRow = table.getSelectionModel().getLeadSelectionIndex();
+		tableColumn = 0;
+		selectedTransactionID = (int) (getValueAt(tableRow, tableColumn));
+	}
+
+	private int getValueAt(int row, int column) {
+		System.out.println(transactionList.get(row).getTransactionID());
+		return transactionList.get(row).getTransactionID();
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent event) {
+		String command = event.getActionCommand();
+
+		if (command == "Delete") {
+			System.out.println("You are in actionPerformed");
+			DeleteTransaction dlt = new DeleteTransaction();
+		} else if (command == "Archive") {
+			// ArchiveTransaction archv = new ArchiveTransaction();
+		}
+
+	}
 
 	public static void main(String[] args) {
 		JFrame frame = new FinanceTracker();
