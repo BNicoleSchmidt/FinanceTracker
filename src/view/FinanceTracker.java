@@ -237,8 +237,8 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		return selectedTransactionID;
 	}
 
-	void setSelectedTransactionID() {
-
+	void setSelectedTransactionID(int sTI) {
+		selectedTransactionID = sTI;
 	}
 
 	private class RowListener implements ListSelectionListener {
@@ -246,7 +246,10 @@ public class FinanceTracker extends JFrame implements ActionListener {
 			if (event.getValueIsAdjusting())
 				return;
 			System.out.println("RowListener");
-			outputSelection();
+			// outputSelection();
+			tableRow = table.getSelectionModel().getLeadSelectionIndex();
+			tableColumn = 0;
+			selectedTransactionID = (int) (getValueAt(tableRow, tableColumn));
 		}
 	}
 
@@ -254,7 +257,7 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		System.out.printf("Lead %d, %d\n", table.getSelectionModel().getLeadSelectionIndex(), 0);
 		tableRow = table.getSelectionModel().getLeadSelectionIndex();
 		tableColumn = 0;
-		selectedTransactionID = (int) (getValueAt(tableRow, tableColumn));
+		setSelectedTransactionID((int) (getValueAt(tableRow, tableColumn)));
 	}
 
 	private int getValueAt(int row, int column) {
@@ -267,11 +270,14 @@ public class FinanceTracker extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 		String command = event.getActionCommand();
 
-		if (command == "Delete") {
+		if (command.equals("Delete")) {
 			System.out.println("You are in actionPerformed");
-			DeleteTransaction dlt = new DeleteTransaction();
-		} else if (command == "Archive") {
+			selectedTransactionID = getSelectedTransactionID();
+			DeleteTransaction dlt = new DeleteTransaction(selectedTransactionID);
+
+		} else if (command.equals("Archive")) {
 			// ArchiveTransaction archv = new ArchiveTransaction();
+			// TODO
 		}
 
 	}
