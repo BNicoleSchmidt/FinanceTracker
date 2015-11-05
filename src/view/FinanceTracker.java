@@ -1,6 +1,10 @@
 package view;
 
-import java.awt.GridLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 /**
  *
@@ -9,10 +13,15 @@ import java.awt.event.WindowAdapter;
  * responsibilities: user interface layout; display of transactions table resultSet
  *                   notification of changes
  **/
+/** CGJAVA-37 fix user interface
+ *  container uses BoxLayout for panels
+ *  panels use GridBagLayout
+ */
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+//import javax.swing.BoxLayout CGJAVA-37
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,97 +55,106 @@ public class FinanceTracker extends JFrame {
 
 	public FinanceTracker() {
 		// Create and show GUI
-		super("Finance Tracker CGJAVA-15");
-
-		System.out.println("You are in FinanceTracker constructor   FinanaceTracker.java"); // mmgg
-		setLayout(new GridLayout(4, 1)); // 4 rows one column
-		JPanel jPanel1, jPanel2, jPanel3, jPanel4; // layout experiment mg
+		super("Finance Tracker cgjava-37");
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		System.out.println("You are in FinanceTracker constructor   FinanaceTracker.java");
+
+		Container container = new Container();
+		add(container);
+		BoxLayout b = new BoxLayout(container, BoxLayout.Y_AXIS);
+		container.setLayout(b);
+
+		JPanel jPanel1, jPanel2, jPanel3, jPanel4;
+
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+
 		jPanel1 = new JPanel();
+		container.add(jPanel1);
+		jPanel1.setLayout(gridBagLayout);
 
-		// this.getRootPane().add( jPanel1 );
-		jPanel1.setLayout(new BoxLayout(jPanel1, BoxLayout.PAGE_AXIS)); // CGJAVA-15
-																		// UI
-
-		this.add(jPanel1);
-		// setLayout(new FlowLayout());
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 0.5;
+		c.gridy = 0;
 
 		jTransactionID = new JTextField("ID", 8); // s/b hidden field TODO mg
-		jPanel1.add(jTransactionID);
-		jTransactionID.setVisible(true);
+		c.gridx = 0;
+		jPanel1.add(jTransactionID, c);
+		// jTransactionID.setVisible(true); // CGJAVA-37
 
 		jUserName = new JTextField("Name", 20);
-		jPanel1.add(jUserName);
-		jUserName.setVisible(true);
+		c.gridx = 1;
+		jPanel1.add(jUserName, c);
 
 		jTransactionDate = new JTextField("Date", 10);
-		jPanel1.add(jTransactionDate);
-		jTransactionDate.setVisible(true);
+		c.gridx = 2;
+		jPanel1.add(jTransactionDate, c);
 
 		jTransactionAmount = new JTextField("Amount", 10);
-		jPanel1.add(jTransactionAmount);
-		jTransactionAmount.setVisible(true);
+		c.gridx = 3;
+		jPanel1.add(jTransactionAmount, c);
 
 		jTransactionType = new JTextField("Type", 6);
-		jPanel1.add(jTransactionType);
-		jTransactionType.setVisible(true);
+		c.gridx = 4;
+		jPanel1.add(jTransactionType, c);
 
 		jCategoryName = new JTextField("Category", 20);
-		jPanel1.add(jCategoryName);
-		jCategoryName.setVisible(true);
+		c.gridx = 5;
+		jPanel1.add(jCategoryName, c);
 
 		jDescription = new JTextField("Description", 20);
-		jPanel1.add(jDescription);
-		jDescription.setVisible(true);
+		c.gridx = 6;
+		jPanel1.add(jDescription, c);
 
 		JButton jSaveButton = new JButton("Save");
-		jPanel1.add(jSaveButton);
-		jSaveButton.setVisible(true);
+		c.gridx = 7;
+		jPanel1.add(jSaveButton, c);
+
 		/*****/
+		// JPanel jPanel2;
 		jPanel2 = new JPanel();
-		jPanel2.setLayout(new BoxLayout(jPanel2, BoxLayout.LINE_AXIS)); // CGJAVA-15
-																		// UI
-		// setLayout(new GridLayout(1, 4));
+		container.add(jPanel2);
+		jPanel2.setLayout(gridBagLayout);
 
-		this.add(jPanel2);
+		c.gridy = 0;
 
-		jHUserID = new JTextField("Hidden Uid", 10); // s/b hidden field TODO mg
-		jPanel2.add(jHUserID);
+		jHUserID = new JTextField("Hidden Uid", 10); // s/b hidden field TODO
+		c.gridx = 0;
+		jPanel2.add(jHUserID, c);
 		jHUserID.setVisible(true);
 
-		jHUserName = new JTextField("Hidden Name", 10); // s/b hidden field TODO
-														// mg
-		jPanel2.add(jHUserName);
+		jHUserName = new JTextField("Hidden Name", 10); // s/b hidden field
+		c.gridx = 1;
+		jPanel2.add(jHUserName, c);
 		jHUserName.setVisible(true);
 
 		jCategoryID = new JTextField("Hidden catID", 10); // s/b hidden field
-															// TODO mg
-		jPanel2.add(jCategoryID);
+		c.gridx = 2;
+		jPanel2.add(jCategoryID, c);
 		jCategoryID.setVisible(true);
 
 		jHCategoryName = new JTextField("Hidden catNAME", 10); // s/b hidden
-																// field TODO mg
-		jPanel2.add(jHCategoryName);
+		c.gridx = 3;
+		jPanel2.add(jHCategoryName, c);
 		jHCategoryName.setVisible(true);
-
-		this.add(jPanel2);
-		/*** jPanel 2 ***/
 
 		// JTextField jErrorMessage = new JTextField();
 		// jPanel2.add( jErrorMessage );
 		// jErrorMessage.setVisible( true );
 
 		/*** jPanel3 ***/
-
 		// DefaultTableModel model = new DefaultTableModel();
 		JTable table = new JTable();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 
 		jPanel3 = new JPanel();
+		container.add(jPanel3);
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS); // CGJAVA-15 UI
+		table.setPreferredSize(new Dimension(600, 600)); // mg adds V scroll bar
+															// ???
 
 		AppDb appDb = new AppDb();
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
@@ -150,7 +168,7 @@ public class FinanceTracker extends JFrame {
 		model.addColumn("Category");
 		model.addColumn("Description");
 
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		// table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 		for (int i = 0; i < transactionList.size(); i++) {
 			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
@@ -160,32 +178,25 @@ public class FinanceTracker extends JFrame {
 		}
 
 		jPanel3.add(scrollPane);
-		this.add(jPanel3);
+		// container.add(jPanel3);
 
 		// CGJAVA-15 Add Total Deposits
-		jPanel4 = new JPanel();
-		jPanel4.setLayout(new BoxLayout(jPanel4, BoxLayout.X_AXIS));// CGJAVA-15
-																	// ui
-		{
-			JLabel totalDepositsLabel = new JLabel("Total Deposits: ", JLabel.LEFT);
-			jPanel4.add(totalDepositsLabel);
-			String d = Transaction.totalDeposits(transactionList);
-			JLabel tDLabel = new JLabel(d);
-			jPanel4.add(tDLabel);
-		}
+		FlowLayout f = new FlowLayout(FlowLayout.RIGHT, 10, 10);
+		jPanel4 = new JPanel(f);
 
-		JLabel spLabel = new JLabel("     ", JLabel.CENTER);
-		jPanel4.add(spLabel);
+		container.add(jPanel4);
 
-		{
-			JLabel totalWithdrawalsLabel = new JLabel("Total Withdrawals: ", JLabel.RIGHT);
-			jPanel4.add(totalWithdrawalsLabel);
-			String w = Transaction.totalWithdrawals(transactionList);
-			JLabel tWLabel = new JLabel(w);
-			jPanel4.add(tWLabel);
-		}
+		JLabel totalDepositsLabel = new JLabel("Total Deposits: ", JLabel.LEFT);
+		jPanel4.add(totalDepositsLabel);
+		String d = Transaction.totalDeposits(transactionList);
+		JLabel tDLabel = new JLabel(d);
+		jPanel4.add(tDLabel);
 
-		this.add(jPanel4);
+		JLabel totalWithdrawalsLabel = new JLabel("Total Withdrawals: ", JLabel.RIGHT);
+		jPanel4.add(totalWithdrawalsLabel);
+		String w = Transaction.totalWithdrawals(transactionList);
+		JLabel tWLabel = new JLabel(w);
+		jPanel4.add(tWLabel);
 
 	} // end of Display constructor
 
