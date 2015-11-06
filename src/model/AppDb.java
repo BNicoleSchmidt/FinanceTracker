@@ -23,7 +23,7 @@ public class AppDb {
 		Connection connection = null;
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "LaLaland2012");
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "root");
 
 			Statement stmt = connection.createStatement();
 			ResultSet rs;
