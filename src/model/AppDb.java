@@ -13,23 +13,26 @@ public class AppDb {
 	// SQLException {
 
 	// update: changed the second catch to ClassNotFound, deleted throws ~ella
-	// public ArrayList<Transaction> getData() {
-	public ArrayList<Transaction> loadAll() {
-		// throws ClassNotFoundException SQLException {
-		System.out.println("You are in loadAll of AppDb.java"); // mmgg
+	public ArrayList<Transaction> loadAll() throws ClassNotFoundException, SQLException {
+		System.out.println("You are in loadAll of AppDb.java");
 
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 
 		Connection connection = null;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates", "root", "root");
+		Class.forName("com.mysql.jdbc.Driver");
 
-			Statement stmt = connection.createStatement();
+		PropertyResourceBundleSQL prbSQL = new PropertyResourceBundleSQL();
+		connection = DriverManager.getConnection(prbSQL.getURL(), prbSQL.getUserName(), prbSQL.getPassword());
+
+		// connection = DriverManager.getConnection(prbSQL.getURL(),
+		// prbSQL.getUserName(), prbSQL.getPassword());
+		Statement stmt = null;
+
+		try {
+			stmt = connection.createStatement();
 			ResultSet rs;
 
 			try {
-
 				rs = stmt.executeQuery("Select * from records");
 				while (rs.next()) {
 					Transaction tran = new Transaction();
@@ -41,7 +44,7 @@ public class AppDb {
 					tran.setCategoryName(rs.getString("categoryName"));
 					tran.setDescription(rs.getString("description"));
 					transactionList.add(tran);
-				}
+				} // end of while
 
 				int sz = transactionList.size();
 
@@ -56,26 +59,25 @@ public class AppDb {
 					System.out.println((transactionList.get(i)).getDescription());
 				}
 
-			}
-
+			} // end of try
 			catch (SQLException e) {
-				System.out.println("Got the SQL Exception " + e.getMessage());
+				System.out.println("Got the SQLException " + e.getMessage());
 				e.printStackTrace();
 				throw e;
 			}
-		} catch (SQLException | ClassNotFoundException e) {
-			System.out.println("Got the SQL Exception " + e.getMessage());
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} finally {
+		} // end of try
+		finally
+
+		{
 			if (connection != null) {
 				try {
 					connection.close();
 				} catch (SQLException se) {
-
+					System.out.println("Got the SQL Exception " + se.getMessage());
+					se.printStackTrace();
 				}
 			}
 		}
-		return transactionList;
+		return (transactionList);
 	}
 }

@@ -158,8 +158,11 @@ public class FinanceTracker extends JFrame {
 
 		AppDb appDb = new AppDb();
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
-		transactionList = appDb.loadAll();
-
+		try {
+			transactionList = appDb.loadAll();
+		} catch (Exception se) { // TODO
+			se.printStackTrace();
+		}
 		model.addColumn("T-ID");
 		model.addColumn("Name");
 		model.addColumn("T-Date");
