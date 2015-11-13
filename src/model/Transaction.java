@@ -47,17 +47,10 @@ public class Transaction {
 
 	private String query;
 
-	private static final String tableQuery = ("SELECT transactionID, transactionDate, t.userID,"
-			+ " u.name, transactionType, amount, " + "categoryID, c.categoryName, " + "description, "
-			+ "WHERE users.userID = transactions.userID, " + "categories.categoryID = transaction.categoryID;"
-			+ "FROM users as u, transactions as t, categories as c" + "WHERE u.userID = t.userID, "
-			+ "      c.categoryID = t.categoryID;");
-
 	// constructor
 	Transaction() {
 		mTransactionID = 0; // should this be null. what happens on an insert if
 							// this field is populated.
-
 		mTransactionDate = "1/1/2000";
 		mUserID = 0;
 		mName = " ";
@@ -232,7 +225,6 @@ public class Transaction {
 		int sz = transactionList.size();
 		for (int i = 0; i < sz; i++) {
 			System.out.println((transactionList.get(i)).getTransactionType());
-			System.out.println((transactionList.get(i)).getAmount());
 			if (transactionList.get(i).getTransactionType() == 'W') {
 				total += ((transactionList.get(i)).getAmount());
 				System.out.println((transactionList.get(i)).getAmount());
@@ -242,75 +234,8 @@ public class Transaction {
 		return wTotal;
 	}
 
-	// when a row is selected
-	// load one row to jfields in
-	// jpanel1/TransactionUI
-
-	/**
-	 * public static ArrayList<Transaction> loadAll() { // throws
-	 * ClassNotFoundException SQLException {
-	 *
-	 * ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
-	 *
-	 * Connection connection = null; try {
-	 * Class.forName("com.mysql.jbdc.Driver"); connection =
-	 * DriverManager.getConnection("jdbc:mysql://localhost:3306/roommates",
-	 * "root", "LaLaland2012");
-	 *
-	 * Statement stmt = connection.createStatement(); ResultSet rs;
-	 *
-	 * try {
-	 *
-	 * rs = stmt.executeQuery("Select * from records"); while (rs.next()) {
-	 * Transaction tran = new Transaction();
-	 * tran.setTransactionID(rs.getInt("transactionID"));
-	 * tran.setName(rs.getString("name"));
-	 * tran.setTransactionDate(rs.getString("transactionDate"));
-	 * transactionList.add(tran); }
-	 *
-	 * int sz = transactionList.size();
-	 *
-	 * // print out the list - code test for (int i = 0; i < sz; i++) {
-	 * System.out.println((transactionList.get(i)).getTransactionID());
-	 * System.out.println((transactionList.get(i)).getName());
-	 * System.out.println((transactionList.get(i)).getTransactionDate()); } //
-	 * for
-	 *
-	 * } // try
-	 *
-	 * catch (SQLException e) { System.out.println("Got the SQL Exception " +
-	 * e.getMessage()); e.printStackTrace(); throw e; } } catch (SQLException |
-	 * ClassNotFoundException e) { System.out.println("Got the SQL Exception " +
-	 * e.getMessage()); e.printStackTrace(); throw new RuntimeException(e); }
-	 * finally { if (connection != null) { try { connection.close(); } catch
-	 * (SQLException se) {
-	 *
-	 * } } } return transactionList; } // end of loadALL()
-	 ***/
-	// get hidden transactionID from row selected from resultSet in panel3
-	// select transaction with both userName and categoryName
-	// store userName as both a visible field and a hidden field
-	// store categoryName as both a visible field and a hidden field
-	// store resultSet in top panel of screen
-	//
-	// ??? this logic does not work ???
-	// if ( visible userName != hidden userName
-	// { select userID from users where user table userName = visible
-	// userName }
-	// if ( resultSet userID != hidden userID )
-	// { You have a new user, insert new user into user table
-	// select to get new userID (an auto increment field)
-	// set hidden userID with new userID }
-	// does not protect against duplicate names. How to prevent duplicate
-	// users. Make userID and userName a concatenated key???
-	// store User names as an upper case letter followed by lower case
-	// letters
-	//
-	//
-	// same process for category name...
-
 	// TODO mg this INSERT statement is not in the correct format!!!
-	//
+
 	PreparedStatement onSave(int tID, String tDate, int tUserID, char tType, double tAmount, int tCategoryID,
 			String Description) throws SQLException {
 		if (mTransactionID == 0) {
@@ -351,9 +276,5 @@ public class Transaction {
 			return (prepUpdateStmt);
 		}
 	}// end of onSave method
-
-	String delete(int tranID) {
-		return "DELETE FROM transactions WHERE transactionID = tranID;";
-	} // end of delete method
 
 } // end of Transaction class
