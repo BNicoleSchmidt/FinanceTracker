@@ -176,8 +176,11 @@ public class FinanceTracker extends JFrame implements ActionListener {
 
 		AppDb appDb = new AppDb();
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
-		transactionList = appDb.loadAll();
-
+		try {
+			transactionList = appDb.loadAll();
+		} catch (Exception se) { // TODO
+			se.printStackTrace();
+		}
 		model.addColumn("T-ID");
 		// build table model
 
@@ -199,7 +202,11 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		transactionList = new ArrayList<Transaction>();
 
 		// load DB data from DB
-		transactionList = appDb.loadAll();
+		try {
+			transactionList = appDb.loadAll();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
 		for (int i = 0; i < transactionList.size(); i++) {
 			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
