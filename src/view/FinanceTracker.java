@@ -1,13 +1,12 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 /**
@@ -70,6 +69,7 @@ public class FinanceTracker extends JFrame implements ActionListener {
 	static int selectedTransactionID = 0;
 
 	public FinanceTracker() {
+		super("FinanceTracker");
 		// Create and show GUI
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -77,18 +77,14 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		System.out.println("You are in FinanceTracker constructor   FinanaceTracker.java");
 
 		Container container = new Container();
-		add(container);
 		BoxLayout b = new BoxLayout(container, BoxLayout.Y_AXIS);
 		container.setLayout(b);
+		add(container);
 
-		JPanel jPanel1, jPanel2, jPanel3, jPanel4;
-
-		GridBagLayout gridBagLayout = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 
-		jPanel1 = new JPanel();
+		JPanel jPanel1 = new JPanel(new GridBagLayout()); // cg 40
 		container.add(jPanel1);
-		jPanel1.setLayout(gridBagLayout);
 
 		c.fill = GridBagConstraints.BOTH;
 		c.weightx = 0.5;
@@ -97,7 +93,6 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		jTransactionID = new JTextField("ID", 8); // s/b hidden field TODO mg
 		c.gridx = 0;
 		jPanel1.add(jTransactionID, c);
-		// jTransactionID.setVisible(true); // CGJAVA-37
 
 		jUserName = new JTextField("Name", 20);
 		c.gridx = 1;
@@ -129,12 +124,8 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		jSaveButton.setVisible(true);
 
 		/*****/
-		// JPanel jPanel2;
-		jPanel2 = new JPanel();
+		JPanel jPanel2 = new JPanel(new GridBagLayout());
 		container.add(jPanel2);
-		jPanel2.setLayout(gridBagLayout);
-
-		c.gridy = 0;
 
 		jHUserID = new JTextField("Hidden Uid", 10); // s/b hidden field TODO
 		c.gridx = 0;
@@ -156,24 +147,27 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		jPanel2.add(jHCategoryName, c);
 		jHCategoryName.setVisible(true);
 
-		// JTextField jErrorMessage = new JTextField();
-		// jPanel2.add( jErrorMessage );
-		// jErrorMessage.setVisible( true );
+		// Message Panel
+		JPanel jPanelEM = new JPanel(new BorderLayout());
+		container.add(jPanelEM);
+		JTextField jErrorMessage = new JTextField("Message", 80);
+		jPanelEM.add(jErrorMessage);
 
 		/*** jPanel3 ***/
 		// DefaultTableModel model = new DefaultTableModel();
+		JPanel jPanel3 = new JPanel(new BorderLayout());
+
 		JTable table = new JTable();
-		this.add(jPanel2);
 
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-		jPanel3 = new JPanel();
-		container.add(jPanel3);
 		JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS); // CGJAVA-15 UI
-		table.setPreferredSize(new Dimension(600, 600)); // mg adds V scroll bar
+		table.setPreferredSize(new Dimension(800, 600)); // mg adds V scroll bar
 															// ???
+		container.add(jPanel3);
 
+		// Create transaction list to hold data and load data from DB
 		AppDb appDb = new AppDb();
 		ArrayList<Transaction> transactionList = new ArrayList<Transaction>();
 		try {
@@ -181,9 +175,9 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		} catch (Exception se) { // TODO
 			se.printStackTrace();
 		}
-		model.addColumn("T-ID");
-		// build table model
 
+		// build table model
+		model.addColumn("T-ID");
 		model.addColumn("Name");
 		model.addColumn("T-Date");
 		model.addColumn("T-Type");
@@ -198,16 +192,6 @@ public class FinanceTracker extends JFrame implements ActionListener {
 
 		table.getSelectionModel().addListSelectionListener(new RowListener());
 
-		// create transaction list to hold data
-		transactionList = new ArrayList<Transaction>();
-
-		// load DB data from DB
-		try {
-			transactionList = appDb.loadAll();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
 		for (int i = 0; i < transactionList.size(); i++) {
 			model.addRow(new Object[] { transactionList.get(i).getTransactionID(), transactionList.get(i).getName(),
 					transactionList.get(i).getTransactionDate(), transactionList.get(i).getTransactionType(),
@@ -216,12 +200,9 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		}
 
 		jPanel3.add(scrollPane);
-		// container.add(jPanel3);
 
 		// CGJAVA-15 Add Total Deposits
-		FlowLayout f = new FlowLayout(FlowLayout.RIGHT, 10, 10);
-		jPanel4 = new JPanel(f);
-
+		JPanel jPanel4 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
 		container.add(jPanel4);
 
 		JLabel totalDepositsLabel = new JLabel("Total Deposits: ", JLabel.LEFT);
@@ -236,7 +217,6 @@ public class FinanceTracker extends JFrame implements ActionListener {
 		JLabel tWLabel = new JLabel(w);
 		jPanel4.add(tWLabel);
 
-		this.add(jPanel4);
 	} // end of Display constructor
 
 	public int getSelectedTransactionID() {
@@ -249,13 +229,17 @@ public class FinanceTracker extends JFrame implements ActionListener {
 
 	private class RowListener implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent event) {
+			ListSelectionModel selectionModel = table.getSelectionModel();
+			selectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			if (event.getValueIsAdjusting())
 				return;
 			System.out.println("RowListener");
 			// outputSelection();
 			tableRow = table.getSelectionModel().getLeadSelectionIndex();
+			System.out.printf("Table Row %d \n", tableRow);
 			tableColumn = 0;
 			selectedTransactionID = (int) (getValueAt(tableRow, tableColumn));
+			System.out.printf("select transaction id %d \n", selectedTransactionID);
 		}
 	}
 
@@ -269,7 +253,6 @@ public class FinanceTracker extends JFrame implements ActionListener {
 	private int getValueAt(int row, int column) {
 		System.out.println(transactionList.get(row).getTransactionID());
 		return transactionList.get(row).getTransactionID();
-
 	}
 
 	@Override
